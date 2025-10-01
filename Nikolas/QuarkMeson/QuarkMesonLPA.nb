@@ -1,1 +1,80 @@
+Quark-Meson model LPA
+General setup
 
+In[1]:= Get["DiFfRG`"]
+SetDirectory[GetDirectory[]];
+
+$Assumptions = q > 0 && k > 0 && p > 0 && Nc > 0 && Nf > 0 && -1 < cos1 < 1 && T > 0 && muq >= 0;
+
+AddExtraVars[
+  (*momentum variables*)
+  k, p, q0, p0, p0f, qf, q, muq, T,
+  
+  (*regulators*)
+  RPhi, RPhidot, RQ, RQdot,
+  GPion, GPionInv, GSigma, GSigmaInv, GQ,
+  
+  (*wavefunction renormalizations*)
+  ZQ, ZPhi,
+  
+  (*anomalous dimensions*)
+  etaQ, etaPhi,
+  
+  
+  (*quark-meson scatterings*)
+  hPhi, d1hPhi, d2hPhi,
+  
+  (*meson scatterings*)
+  d1V, d2V, d3V, d4V, d5V,
+  
+  (*fields*)
+  sigma, rhoPhi,
+  
+  (*propagators*)
+  GQ, GPhi];
+In[6]:= fRGEq = {"Prefactor" -> {1/2},
+	<|"type" -> "Regulatordot",
+	"indices" -> {a,b}|>,
+	<|"type" -> "Propagator",
+	"indices" -> {a,b}|>};
+	
+fields = <|
+	"bosonic" -> {\[Sigma][p], \[CapitalPi][p,{a}]},
+	"fermionic" -> {{qbar[p, {d, c, f}], q[p, {d, c, f}]}}
+|>;
+
+truncation = <|
+	{{qb, q}, {\[Sigma], \[Sigma]}, {\[CapitalPi], \[CapitalPi]},
+	{qb, q, \[Sigma]}, {qb, q, \[CapitalPi]}, {qb, q, \[Sigma], \[Sigma]}, {qb, q, \[Sigma], \[Sigma], \[Sigma]}, {qb, q, \[Sigma], \[CapitalPi]}, {qb, q, \[Sigma], \[CapitalPi], \[CapitalPi]}, {qb, q, \[Sigma], \[Sigma], \[CapitalPi]}, {qb, q, \[CapitalPi], \[CapitalPi], \[CapitalPi]}},
+	{\[Sigma], \[Sigma], \[Sigma]}, {\[Sigma], \[Sigma], \[Sigma], \[Sigma]}, {\[Sigma], \[CapitalPi], \[CapitalPi]}, {\[Sigma], \[Sigma], \[CapitalPi], \[CapitalPi]}, {\[CapitalPi], \[CapitalPi], \[CapitalPi], \[CapitalPi]}
+|>;
+
+SetupfRG = <|"MasterEquation" -> fRGEq,
+	"FieldSpace" -> fields,
+	"Truncation" -> truncation|>;
+	
+DiagramStyle = {
+	q -> Black,
+	\[CapitalPi] -> {Red},
+	\[Sigma] -> {Red, Dashed}};
+kernelV = <|"Path" -> "V", "Name" -> "V", "Type" -> "Quadrature", "Angles" -> 0, "d" -> 3, "AD" -> True, "ctype" -> "double", "Device" -> "GPU"|>;
+kernels = {kernelV};
+
+kernelParameterList={
+<|"Name"->"p0f","Type"->"Constant","AD"->False|>,
+<|"Name"->"p","Type"->"Constant","AD"->False|>,
+
+<|"Name"->"Nc","Type"->"Constant","AD"->False|>,
+<|"Name"->"Nf","Type"->"Constant","AD"->False|>,
+<|"Name"->"T","Type"->"Constant","AD"->False|>,
+<|"Name"->"muq","Type"->"Constant","AD"->False|>,
+
+(*Yukawa coupling*)
+<|"Name"->"hPhi","Type"->"Variable","AD"->True|>,
+
+(*Meson couplings*)
+<|"Name"->"d1V","Type"->"Variable","AD"->True|>,
+<|"Name"->"d2V","Type"->"Variable","AD"->True|>,
+<|"Name"->"d3V","Type"->"Variable","AD"->True|>,
+<|"Name"->"rhoPhi","Type"->"Constant","AD"->False|>
+};

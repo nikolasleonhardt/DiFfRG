@@ -1,6 +1,6 @@
 #include "flows.hh"
 
-ON_finiteTFlowEquations::ON_finiteTFlowEquations(const JSONValue& json)
+QuarkMesonLPAFlowEquations::QuarkMesonLPAFlowEquations(const JSONValue& json)
   : FlowEquationsFiniteT(json, json.get_double("/physical/T"),
 
                     [&](double q2) { return 1. / (q2 + __REGULATOR__::RB(powr<2>(k), q2)) * __REGULATOR__::RBdot(powr<2>(k), q2); },

@@ -6,10 +6,10 @@
 #include "def.hh"
 #include <DiFfRG/physics/flow_equations.hh>
 
-class ON_finiteTFlowEquations : public FlowEquationsFiniteT
+class QuarkMesonLPAFlowEquations : public FlowEquationsFiniteT
 {
 public:
-  ON_finiteTFlowEquations(const JSONValue& json);
+  QuarkMesonLPAFlowEquations(const JSONValue& json);
 
 private:
   const std::array<uint, 1> grid_size_int;
