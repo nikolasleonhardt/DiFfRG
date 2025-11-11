@@ -1,19 +1,16 @@
 template <typename REG> class V_kernel
 {
 public:
-  template <typename T1, typename T2, typename T3, typename T4, typename T5>
+  template <typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8, typename T9, typename T10, typename T11>
   static __forceinline__ __host__ __device__ auto
-  kernel(const double q, const double k, const T1 N, const T2 T, const T3 rhoPhi, const T4 m2Pi, const T5 m2Sigma)
+  kernel(const double q, const double k, const T1 p0f, const T2 p, const T3 Nc, const T4 Nf, const T5 T, const T6 muq, const T7 hPhi, const T8 d1V, const T9 d2V, const T10 d3V, const T11 rhoPhi)
   {
-        // optimization definitions
-    const double DiFfRGREPL1 = RB(powr<2>(k),powr<2>(q));
-    
         // flow
-        return 0.25*(CothFiniteT((sqrt(DiFfRGREPL1+m2Sigma+powr<2>(q))),T)*(sqrt(DiFfRGREPL1+m2Pi+powr<2>(q)))+(-1.+N)*CothFiniteT((sqrt(DiFfRGREPL1+m2Pi+powr<2>(q))),T)*(sqrt(DiFfRGREPL1+m2Sigma+powr<2>(q))))*powr<-1>(sqrt((DiFfRGREPL1+m2Pi+powr<2>(q))*(DiFfRGREPL1+m2Sigma+powr<2>(q))))*RBdot(powr<2>(k),powr<2>(q));
+        return QCDSimp(QCDSimp(TerminatedEvaluation(0.)));
   }
 
-  template <typename T1, typename T2, typename T3, typename T4, typename T5>
-  static __forceinline__ __host__ __device__ auto constant(const double k, const T1 N, const T2 T, const T3 rhoPhi, const T4 m2Pi, const T5 m2Sigma)
+  template <typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8, typename T9, typename T10, typename T11>
+  static __forceinline__ __host__ __device__ auto constant(const double k, const T1 p0f, const T2 p, const T3 Nc, const T4 Nf, const T5 T, const T6 muq, const T7 hPhi, const T8 d1V, const T9 d2V, const T10 d3V, const T11 rhoPhi)
   {
         // flow
         return 0.;

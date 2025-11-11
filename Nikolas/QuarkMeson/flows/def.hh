@@ -9,5 +9,5 @@
 
 using namespace ::DiFfRG;
 
-struct reg_opts { static constexpr uint order = 6; };
-#define __REGULATOR__ ::DiFfRG::PolynomialExpRegulator<reg_opts>
+
+#define __REGULATOR__ ::DiFfRG::PolynomialExpRegulator<>

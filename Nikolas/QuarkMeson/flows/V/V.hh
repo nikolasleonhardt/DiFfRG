@@ -38,10 +38,10 @@ namespace DiFfRG
       }
 
     private:
-      std::future<double> request_CT(const double k, const double N, const double T, const double rhoPhi, const double m2Pi, const double m2Sigma);
-      double get_CT(const double k, const double N, const double T, const double rhoPhi, const double m2Pi, const double m2Sigma);
-      std::future<autodiff::real> request_AD(const double k, const double N, const double T, const double rhoPhi, const autodiff::real m2Pi, const autodiff::real m2Sigma);
-      autodiff::real get_AD(const double k, const double N, const double T, const double rhoPhi, const autodiff::real m2Pi, const autodiff::real m2Sigma);
+      std::future<double> request_CT(const double k, const double p0f, const double p, const double Nc, const double Nf, const double T, const double muq, const double hPhi, const double d1V, const double d2V, const double d3V, const double rhoPhi);
+      double get_CT(const double k, const double p0f, const double p, const double Nc, const double Nf, const double T, const double muq, const double hPhi, const double d1V, const double d2V, const double d3V, const double rhoPhi);
+      std::future<autodiff::real> request_AD(const double k, const double p0f, const double p, const double Nc, const double Nf, const double T, const double muq, const autodiff::real hPhi, const autodiff::real d1V, const autodiff::real d2V, const autodiff::real d3V, const double rhoPhi);
+      autodiff::real get_AD(const double k, const double p0f, const double p, const double Nc, const double Nf, const double T, const double muq, const autodiff::real hPhi, const autodiff::real d1V, const autodiff::real d2V, const autodiff::real d3V, const double rhoPhi);
 
       QuadratureProvider& quadrature_provider;
       const std::array<uint, 1> grid_sizes;
@@ -50,8 +50,8 @@ namespace DiFfRG
       const double jacobian_quadrature_factor;
 	  const JSONValue json;
 
-      std::unique_ptr<DiFfRG::IntegratorTBB<3, double, V_kernel<__REGULATOR__>>> integrator;
-      std::unique_ptr<DiFfRG::IntegratorTBB<3, autodiff::real, V_kernel<__REGULATOR__>>> integrator_AD;
+      std::unique_ptr<DiFfRG::IntegratorGPU<3, double, V_kernel<__REGULATOR__>>> integrator;
+      std::unique_ptr<DiFfRG::IntegratorGPU<3, autodiff::real, V_kernel<__REGULATOR__>>> integrator_AD;
     };
   } // namespace Flows
 } // namespace DiFfRG

@@ -1,1 +1,84 @@
+Get["DiFfRG`"]
+SetDirectory[GetDirectory[]];
+AddExtraVars[];
+Feynman rules
+FeynmanRules = {
+(*Regulators*)
+(*InversePropagators*)
+\[CapitalGamma]qq = ;
+\[CapitalGamma]\[Sigma]\[Sigma] = ;
+\[CapitalGamma]\[CapitalPi]\[CapitalPi] = ;
+\[CapitalGamma]dd = ;
+
+(*Propagators*)
+Gqq = ;
+G\[Sigma]\[Sigma] =;
+G\[CapitalPi]\[CapitalPi] = ;
+Gdd = ;
+
+(*Vertices*)
+MesonYukawa = ;
+DiquarkYukawa = ;
+
+
+};
+Flow Functions
+(*Helper variables*)
+
+\[Alpha]k = 1+i s
+\[Alpha]dotk = 1+i sdot
+\[Epsilon]q = Sqrt[\[Alpha]k^2 k^2+mq^2]
+mq = Sqrt[\[Rho]Phi] hPhi/2
+\[CapitalDelta] = Sqrt[\[Rho]d] hd
+\[Xi]plus = Sqrt[(\[Epsilon]q+\[Mu])^2+Abs[\[CapitalDelta]]^2]
+\[Xi]minus = Sqrt[(\[Epsilon]q-\[Mu])^2+Abs[\[CapitalDelta]]^2]
+m\[CapitalPi]=Sqrt[partial\[Sigma]V/\[Sigma]]
+\[Epsilon]\[CapitalPi]=Sqrt[k^2+m\[CapitalPi]^2]
+(*Executive decision, in Franz' PhD thesis no square above mD*)
+mD=Sqrt[partialdV/d]
+\[Epsilon]d = Sqrt[k^2+mD^2]
+\[Xi]=\[Rho]d partialdV
+\[Chi]D=Sqrt[16 \[Mu]^2 \[Epsilon]d+\[Xi]^2]
+Out[88]= (0.5 \[Sigma]^2)[\[Sigma],d]
+Out[89]= 1+i s
+Out[90]= 1+i sdot
+Out[91]= Sqrt[k^2 (1+i s)^2+(hPhi^2 \[Rho]Phi)/4]
+Out[92]= (hPhi Sqrt[\[Rho]Phi])/2
+Out[93]= hd Sqrt[\[Rho]d]
+Out[94]= Sqrt[(\[Mu]+Sqrt[k^2 (1+i s)^2+(hPhi^2 \[Rho]Phi)/4])^2+Abs[hd Sqrt[\[Rho]d]]^2]
+Out[95]= Sqrt[(-\[Mu]+Sqrt[k^2 (1+i s)^2+(hPhi^2 \[Rho]Phi)/4])^2+Abs[hd Sqrt[\[Rho]d]]^2]
+Out[96]= Sqrt[((1. \[Sigma])[\[Sigma],d]+((0.5 \[Sigma]^2)^(1,0))[\[Sigma],d])/\[Sigma]]
+Out[97]= Sqrt[k^2+((1. \[Sigma])[\[Sigma],d]+((0.5 \[Sigma]^2)^(1,0))[\[Sigma],d])/\[Sigma]]
+Out[98]= Sqrt[((0.5 \[Sigma]^2)^(0,1))[\[Sigma],d]/d]
+Out[99]= Sqrt[k^2+((0.5 \[Sigma]^2)^(0,1))[\[Sigma],d]/d]
+(*Fermion flow (three-dimensional flat regulator)*)
+redQuarkFlowEq = -Nf k^5/(3 \[Pi]^2) (\[Alpha]k(4 \[Alpha]k-3)+\[Alpha]dotk(\[Alpha]k-3/5)) ((\[Epsilon]q-\[Mu])/\[Epsilon]q Tanh[\[Xi]minus/(2 T)]/\[Xi]minus+(\[Epsilon]q+\[Mu])/\[Epsilon]q Tanh[\[Xi]plus/(2 T)]/\[Xi]plus)
+blueQuarkFlowEq = -Nf k^5/(3 \[Pi]^2) (Tanh[(\[Epsilon]q-\[Mu])/(2 T)]+Tanh[(\[Epsilon]q+\[Mu])/(2 T)])/(2 \[Epsilon]q)
+
+(*Pion flow (three-dimesnional flat regulator)*)
+pionFlowEq = k^5/12 Coth[\[Epsilon]\[CapitalPi]/(2 T)]/\[Epsilon]\[CapitalPi]
+
+(*Diquark flow equation*)
+diquarkFlowEquation = k^5/(3 \[Pi]^2) (Coth[(\[Epsilon]d+2 \[Mu])/(2 T)]/(4 \[Epsilon]d)+Coth[(\[Epsilon]d-2 \[Mu])/(2 T)]/(4 \[Epsilon]d))
+uncoupledPartSigmaFlowEquation = k^5/(12 \[Pi]^2) Coth[Sqrt[k^2+M\[Sigma]^2]/(2 T)]/Sqrt[k^2+M\[Sigma]^2]
+uncoupledPartDiquarkFlowEquation = k^5/(12 \[Pi]^2) ((1-(8 \[Mu]^2)/\[Chi]D) Coth[Sqrt[k^2+4 \[Mu]^2+Md^2-\[Chi]D]/(2 T)]/Sqrt[k^2+4 \[Mu]^2+Md^2-\[Chi]D]+(1+(8 \[Mu]^2)/\[Chi]D) Coth[Sqrt[k^2+4 \[Mu]^2+Md^2+\[Chi]D]/(2 T)]/Sqrt[k^2+4 \[Mu]^2+Md^2+\[Chi]D])
+coupledPartSigmaDiquarkFlowEquation = -(b/2) k^5/(3 \[Pi]^2) T \!\(
+\*UnderoverscriptBox[\(\[Sum]\), \(\[Omega] = 0\), \(\[Infinity]\)]
+\*FractionBox[\(\[Xi]\ \((Kdplus\ Ksigma + Kdminus\ \((Kplus + Ksigma)\) - 
+\*SuperscriptBox[\(\[Xi]\), \(2\)])\)\), \(Ksigma\ \((Kdplus\ Kdminus - 
+\*SuperscriptBox[\(\[Xi]\), \(2\)])\)\ \((Kdminus\ Kdplus\ Ksigma + \[Xi]\ \((
+\*SuperscriptBox[\(b\), \(2\)] - Ksigma\ \[Xi])\))\)\)]\)
+Out[36]= -((k^5 Nf (\[Alpha]dotk (-(3/5)+\[Alpha]k)+\[Alpha]k (-3+4 \[Alpha]k)) (((\[Epsilon]q-\[Mu]) Tanh[Sqrt[(\[Epsilon]q-\[Mu])^2+Abs[\[CapitalDelta]]^2]/(2 T)])/(\[Epsilon]q Sqrt[(\[Epsilon]q-\[Mu])^2+Abs[\[CapitalDelta]]^2])+((\[Epsilon]q+\[Mu]) Tanh[Sqrt[(\[Epsilon]q+\[Mu])^2+Abs[\[CapitalDelta]]^2]/(2 T)])/(\[Epsilon]q Sqrt[(\[Epsilon]q+\[Mu])^2+Abs[\[CapitalDelta]]^2])))/(3 \[Pi]^2))
+Out[37]= -((k^5 Nf (Tanh[(\[Epsilon]q-\[Mu])/(2 T)]+Tanh[(\[Epsilon]q+\[Mu])/(2 T)]))/(6 \[Pi]^2 \[Epsilon]q))
+Out[38]= (k^5 Coth[\[Epsilon]\[CapitalPi]/(2 T)])/(12 \[Epsilon]\[CapitalPi])
+Out[39]= (k^5 (Coth[(Sqrt[k^2+md^2]-2 \[Mu])/(2 T)]/(4 Sqrt[k^2+md^2])+Coth[(Sqrt[k^2+md^2]+2 \[Mu])/(2 T)]/(4 Sqrt[k^2+md^2])))/(3 \[Pi]^2)
+Out[40]= (k^5 Coth[Sqrt[k^2+M\[Sigma]^2]/(2 T)])/(12 Sqrt[k^2+M\[Sigma]^2] \[Pi]^2)
+Out[41]= (k^5 (((1-(8 \[Mu]^2)/\[Chi]D) Coth[Sqrt[k^2+Md^2+4 \[Mu]^2-\[Chi]D]/(2 T)])/Sqrt[k^2+Md^2+4 \[Mu]^2-\[Chi]D]+((1+(8 \[Mu]^2)/\[Chi]D) Coth[Sqrt[k^2+Md^2+4 \[Mu]^2+\[Chi]D]/(2 T)])/Sqrt[k^2+Md^2+4 \[Mu]^2+\[Chi]D]))/(12 \[Pi]^2)
+During evaluation of In[36]:= Sum::div: Sum does not converge.
+Out[42]= -((b k^5 T \!\(
+\*UnderoverscriptBox[\(\[Sum]\), \(\[Omega] = 0\), \(\[Infinity]\)]
+\*FractionBox[\(\[Xi]\ \((Kdplus\ Ksigma + Kdminus\ \((Kplus + Ksigma)\) - 
+\*SuperscriptBox[\(\[Xi]\), \(2\)])\)\), \(Ksigma\ \((Kdminus\ Kdplus - 
+\*SuperscriptBox[\(\[Xi]\), \(2\)])\)\ \((Kdminus\ Kdplus\ Ksigma + \[Xi]\ \((
+\*SuperscriptBox[\(b\), \(2\)] - Ksigma\ \[Xi])\))\)\)]\))/(6 \[Pi]^2))
 
