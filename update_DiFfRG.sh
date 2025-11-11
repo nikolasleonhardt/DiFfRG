@@ -102,44 +102,62 @@ if [[ ${option_install_library} != "n" ]] && [[ ${option_install_library} != "N"
 
   echo "  Running CMake..."
   mkdir -p ${BUILDPATH}
-  cd $BUILDPATH
-  cmake \
-    -DCMAKE_INSTALL_PREFIX=${INSTALLPATH}/ \
-    -DBUNDLED_DIR=${INSTALLPATH}/bundled \
-    ${CUDA_OPT} \
-    -DCMAKE_CUDA_FLAGS="${CUDA_FLAGS}" \
-    -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" \
-    -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
-    -DDiFfRG_BUILD_TESTS=OFF \
-    -DDiFfRG_BUILD_DOCUMENTATION=ON \
-    -S ${SOURCEPATH} &>${LOGPATH}/DiFfRG_cmake.log || {
+  cmake_args=(
+  -S "${SOURCEPATH}"
+  -B "${BUILDPATH}"
+  -DCMAKE_INSTALL_PREFIX="${INSTALLPATH}/"
+  -DBUNDLED_DIR="${INSTALLPATH}/bundled"
+  ${CUDA_OPT}                          # -DUSE_CUDA=ON or OFF from your script
+  -DCMAKE_CUDA_ARCHITECTURES=86        # adjust if your GPU isn't Ampere
+  # --- hard reset of any CUDA flags lingering in the cache ---
+  -U CMAKE_CUDA_FLAGS
+  -U CUDA_FLAGS
+  -U CUDA_NVCC_FLAGS
+  # also set them empty to override project defaults at cache init
+  -DCMAKE_CUDA_FLAGS:STRING=""
+  -DCUDA_FLAGS:STRING=""
+  -DCUDA_NVCC_FLAGS:STRING=""
+  # (keep your C/C++ flags if you like)
+  -DCMAKE_CXX_FLAGS="${CXX_FLAGS:-}"
+  -DCMAKE_C_FLAGS="${C_FLAGS:-}"
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=1
+  -DDiFfRG_BUILD_TESTS=OFF
+  -DDiFfRG_BUILD_DOCUMENTATION=ON
+)
+  # Configure
+  cmake "${cmake_args[@]}" &> "${LOGPATH}/DiFfRG_cmake.log" || {
     echo "    Failed to configure DiFfRG, aborting."
+    echo "    See: ${LOGPATH}/DiFfRG_cmake.log"
     exit 1
   }
 
-  echo "  Updating DiFfRG..."
-  make -j ${THREADS} &>${LOGPATH}/DiFfRG_make.log || {
-    echo "    Failed to build DiFfRG, see logfile in '${LOGPATH}/DiFfRG_make.log'."
+  echo "  Building DiFfRG..."
+  cmake --build "${BUILDPATH}" -j "${THREADS}" &> "${LOGPATH}/DiFfRG_build.log" || {
+    echo "    Failed to build DiFfRG, see logfile in '${LOGPATH}/DiFfRG_build.log'."
     exit 1
   }
 
-  echo "  Updating documentation..."
-  make -j ${THREADS} documentation &>${LOGPATH}/DiFfRG_documentation.log || { echo "    Failed to build DiFfRG documentation."; }
+  echo "  Building documentation (optional)..."
+  cmake --build "${BUILDPATH}" --target documentation -j "${THREADS}" \
+    &> "${LOGPATH}/DiFfRG_documentation.log" || {
+      echo "    Failed to build DiFfRG documentation."
+    }
 
-  SuperUser=$(get_execution_permissions $INSTALLPATH)
+  SuperUser="$(get_execution_permissions "${INSTALLPATH}")"
   echo "  Installing library..."
-  $SuperUser make install -j ${THREADS} &>${LOGPATH}/DiFfRG_install.log || {
-    echo "    Failed to install DiFfRG, see logfile in '${LOGPATH}/DiFfRG_install.log'."
-    exit 1
-  }
+  ${SuperUser} cmake --install "${BUILDPATH}" \
+    &> "${LOGPATH}/DiFfRG_install.log" || {
+      echo "    Failed to install DiFfRG, see logfile in '${LOGPATH}/DiFfRG_install.log'."
+      exit 1
+    }
+
   echo "  Python package is being installed to ${INSTALLPATH}python/"
-  $SuperUser cp -r ${SCRIPTPATH}/python ${INSTALLPATH}/ || {
+  ${SuperUser} cp -r "${SCRIPTPATH}/python" "${INSTALLPATH}/" || {
     echo "    Failed to copy DiFfRG python package."
   }
 
   echo
-
-  cd ${SCRIPTPATH}
+  cd "${SCRIPTPATH}"
 fi
 
 # ##############################################################################

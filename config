@@ -13,7 +13,7 @@
 #   export CUDA_FLAGS="-arch=sm_35"
 export C_FLAGS="-march=native -fPIC -O3 -ffast-math -fno-finite-math-only"
 export CXX_FLAGS="${C_FLAGS}"
-export CUDA_FLAGS="-arch=native --use_fast_math"
+export CUDA_FLAGS="--use_fast_math"
 
 # Configure linker flags for the current machine. If gcc is present, the gold linker is used
 if [[ "$CC" == *"gcc"* ]] || [[ "$CXX" == *"gcc"* ]]; then

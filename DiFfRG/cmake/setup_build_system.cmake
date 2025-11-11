@@ -36,7 +36,7 @@ endif()
 # could lead to incompatibilities, and then add the user's flags. Also, by
 # default, we use the highest instruction set available on the current machine.
 set(CMAKE_CUDA_FLAGS
-    "-arch=native --use_fast_math --split-compile=0 --threads=0"
+    "--use_fast_math"
 )
 message(STATUS "CUDA flags have been set to ${CMAKE_CUDA_FLAGS}")
 
