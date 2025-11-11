@@ -8,7 +8,7 @@ profile/
 *.log
 .cache/
 .venv/
-
+.nb
 ## remove builds from Applications
 Applications/*/build
 ## remove tutorials
